@@ -24,7 +24,8 @@
       position:relative;
     }
 
-     body::before{
+    /* ARKA PLAN FOTO */
+    body::before{
       content:"";
       position:fixed;
       inset:0;
@@ -34,12 +35,24 @@
       z-index:-2;
     }
 
+    /* KARARTMA */
     body::after{
       content:"";
       position:fixed;
       inset:0;
       background:rgba(0,0,0,0.65);
       z-index:-1;
+    }
+
+    /* YAĞMUR GIF (EN ÜST KATMAN) */
+    .rain{
+      position:fixed;
+      inset:0;
+      background:url("rain.gif") no-repeat center center;
+      background-size:cover;
+      z-index:9999;
+      pointer-events:none;
+      opacity:0.35;
     }
 
     .timer{
@@ -49,15 +62,21 @@
       text-shadow:0 0 20px rgba(56,189,248,0.6);
       line-height:1.4;
       user-select:none;
+      z-index:10;
+      position:relative;
     }
 
     @media(max-width:700px){
       .timer{ font-size:10vw; }
     }
+
   </style>
 </head>
 
 <body>
+
+  <!-- YAĞMUR -->
+  <div class="rain"></div>
 
   <!-- ARKA PLAN MÜZİK -->
   <audio id="bgMusic" autoplay loop muted>
@@ -73,7 +92,6 @@
     const examDate = new Date("2026-07-19T10:15:00").getTime();
     const el = document.getElementById("count");
 
-    // WEB AUDIO TICK SESİ
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     function tickBeep(){
@@ -111,14 +129,12 @@
         String(mins).padStart(2,'0') + " : " +
         String(secs).padStart(2,'0');
 
-      // HER SANİYE TİK
       tickBeep();
     }
 
     setInterval(update, 1000);
     update();
 
-    // MÜZİK KONTROL (orijinal sistem korunuyor)
     const audio = document.getElementById("bgMusic");
 
     window.addEventListener("load", () => {
@@ -135,7 +151,6 @@
       audio.play().catch(()=>{});
     }, { once:true });
 
-    // tarayıcı audio kilidi açma
     window.addEventListener("click", () => {
       if (audioCtx.state === "suspended") {
         audioCtx.resume();
